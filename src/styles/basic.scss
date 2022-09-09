@@ -1,0 +1,77 @@
+:root {
+    --my-white: #ffffff;
+    --my-white-soft: #f9f9f9;
+    --my-white-mute: #f1f1f1;
+    --my-black: #1a1a1a;
+    --my-black-pure: #000000;
+    --my-black-soft: #242424;
+    --my-black-mute: #2f2f2f;
+    --my-indigo: #213547;
+    --my-indigo-soft: #476582;
+    --my-indigo-light: #aac8e4;
+    --my-gray: #8e8e8e;
+    --my-gray-light-1: #aeaeae;
+    --my-gray-light-2: #c7c7c7;
+    --my-gray-light-3: #d1d1d1;
+    --my-gray-light-4: #e5e5e5;
+    --my-gray-light-5: #f2f2f2;
+    --my-gray-dark-1: #636363;
+    --my-gray-dark-2: #484848;
+    --my-gray-dark-3: #3a3a3a;
+    --my-gray-dark-4: #282828;
+    --my-gray-dark-5: #202020;
+    --my-divider-light-1: rgba(60, 60, 60, 0.29);
+    --my-divider-light-2: rgba(60, 60, 60, 0.12);
+    --my-divider-dark-1: rgba(84, 84, 84, 0.65);
+    --my-divider-dark-2: rgba(84, 84, 84, 0.48);
+    --my-text-light-1: var(--my-indigo);
+    --my-text-light-2: rgba(60, 60, 60, 0.7);
+    --my-text-light-3: rgba(60, 60, 60, 0.33);
+    --my-text-light-4: rgba(60, 60, 60, 0.18);
+    --my-text-light-code: var(--my-indigo-soft);
+    --my-text-dark-1: rgba(255, 255, 255, 0.87);
+    --my-text-dark-2: rgba(235, 235, 235, 0.6);
+    --my-text-dark-3: rgba(235, 235, 235, 0.38);
+    --my-text-dark-4: rgba(235, 235, 235, 0.18);
+    --my-text-dark-code: var(--my-indigo-light);
+    --my-green: #42b883;
+    --my-green-light: #42d392;
+    --my-green-lighter: #35eb9a;
+    --my-green-dark: #33a06f;
+    --my-green-darker: #155f3e;
+    --my-blue: #3b8eed;
+    --my-blue-light: #549ced;
+    --my-blue-lighter: #50a2ff;
+    --my-blue-dark: #3468a3;
+    --my-blue-darker: #255489;
+    --my-yellow: #ffc517;
+    --my-yellow-light: #ffe417;
+    --my-yellow-lighter: #ffff17;
+    --my-yellow-dark: #e0ad15;
+    --my-yellow-darker: #bc9112;
+    --my-red: #ed3c50;
+    --my-red-light: #f43771;
+    --my-red-lighter: #fd1d7c;
+    --my-red-dark: #cd2d3f;
+    --my-red-darker: #ab2131;
+    --my-purple: #de41e0;
+    --my-purple-light: #e936eb;
+    --my-purple-lighter: #f616f8;
+    --my-purple-dark: #823c83;
+    --my-purple-darker: #602960;
+}
+
+:root,
+body,
+#app {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+#app{
+    display: flex;
+    flex-direction: column;
+    min-width: 800px;
+    min-height: 500px;
+}
