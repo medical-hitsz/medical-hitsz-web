@@ -6,6 +6,9 @@ import {
   msgCodeFormat,
 } from "@/utils/common";
 import { ElMessage } from "element-plus";
+import userLoginApi from "@/api/user-login";
+import { useUserStore } from "@/stores/user";
+import { useRouter } from "vue-router";
 
 enum MsgCodeStatus {
   Init = "Init",
@@ -15,6 +18,9 @@ enum MsgCodeStatus {
 
 const formRef = ref();
 const countCanvasRef = ref();
+
+const userStore = useUserStore();
+const router = useRouter();
 
 const form = reactive({
   tel: "",
@@ -82,15 +88,20 @@ const drawCountCanvas = (count: number) => {
 watch(msgCodeTime, (val) => {
   nextTick(() => drawCountCanvas(val));
 });
-const handleSendMsgCode = () => {
+const handleSendMsgCode = async () => {
   if (!msgCodeCanSend.value) {
     return;
   }
   msgCodeStatus.value = MsgCodeStatus.Load;
-  setTimeout(() => {
-    ElMessage.success("验证码已发送！");
-    msgTimerStart();
-  }, 1000);
+  userLoginApi
+    .sendMsgCode({ tel: form.tel })
+    .then(() => {
+      ElMessage.success("验证码已发送！");
+      msgTimerStart();
+    })
+    .catch(() => {
+      msgCodeStatus.value = MsgCodeStatus.Init;
+    });
 };
 
 const phoneNumberValidator = (
@@ -149,11 +160,22 @@ const handleMsgCodeInput = (value: string) => {
   formRef.value.clearValidate(["msgCode"]);
 };
 const handleSubmit = async () => {
-  await formRef.value.validate(async (valid: boolean) => {
+  await formRef.value.validate((valid: boolean) => {
     if (!valid) {
       return;
     }
     loading.value = true;
+    userLoginApi
+      .login(form)
+      .then((res) => {
+        const { data } = res;
+        userStore.login(data.user, data.authorization);
+        router.push("/");
+      })
+      .catch()
+      .finally(() => {
+        loading.value = true;
+      });
   });
 };
 </script>

@@ -21,4 +21,7 @@ module.exports = {
   globals: {
     NodeJS: true,
   },
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+  },
 };
