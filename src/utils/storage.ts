@@ -11,3 +11,7 @@ export const setAuthorization = (newAuthorization: string) => {
 export const clearAuthorization = () => {
   localStorage.removeItem(AUTHORIZATION_KEY);
 };
+
+export const clearStorage = () => {
+  localStorage.clear();
+};

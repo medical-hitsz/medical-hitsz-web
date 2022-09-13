@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>主页</div>
+  <div>404</div>
 </template>
 
 <style lang="scss" scoped></style>

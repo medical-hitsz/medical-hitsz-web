@@ -20,7 +20,3 @@ app.use(createPinia());
 app.use(router);
 
 app.mount("#app");
-
-if (import.meta.env.MODE === "development") {
-  console.log(import.meta.env);
-}

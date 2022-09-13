@@ -1,9 +1,9 @@
 import type { User } from "@/types/user";
 import {
-  clearAuthorization,
+  clearStorage,
   getAuthorization,
   setAuthorization,
-} from "@/utils/authorization";
+} from "@/utils/storage";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore({
@@ -20,6 +20,7 @@ export const useUserStore = defineStore({
   },
   actions: {
     login(user: User, authorization: string) {
+      clearStorage();
       this.user = user;
       this.isLoggedIn = true;
       this._authorization = authorization;
@@ -29,7 +30,7 @@ export const useUserStore = defineStore({
       this.user = { nickname: "", avatar: "" };
       this.isLoggedIn = false;
       this._authorization = "";
-      clearAuthorization();
+      clearStorage();
     },
   },
 });
