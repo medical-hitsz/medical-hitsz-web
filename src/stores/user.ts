@@ -1,4 +1,4 @@
-import type { User } from "@/types/user";
+import type { User } from "@/types/service";
 import {
   clearStorage,
   getAuthorization,
@@ -19,6 +19,9 @@ export const useUserStore = defineStore({
     },
   },
   actions: {
+    setUserInfo(user: User) {
+      this.user = user;
+    },
     login(user: User, authorization: string) {
       clearStorage();
       this.user = user;

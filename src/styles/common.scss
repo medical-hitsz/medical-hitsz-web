@@ -1,0 +1,20 @@
+.common-view {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid white;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: var(--el-box-shadow-light);
+    padding: 20px 30px;
+    
+    .common-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 15px;
+        color: var(--my-gray-dark-1);
+        letter-spacing: 1px;
+    }
+}
+
+

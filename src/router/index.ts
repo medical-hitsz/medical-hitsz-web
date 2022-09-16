@@ -21,13 +21,8 @@ const router = createRouter({
       component: () => import("@/views/UserCenterView.vue"),
     },
     {
-      path: "/not-found",
-      name: "NotFound",
-      component: () => import("@/views/NotFoundView.vue"),
-    },
-    {
       path: "/:pathMatch(.*)",
-      name: "404",
+      name: "NotFound",
       component: () => import("@/views/NotFoundView.vue"),
     },
   ],

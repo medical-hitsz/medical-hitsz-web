@@ -174,7 +174,7 @@ const handleSubmit = async () => {
       })
       .catch()
       .finally(() => {
-        loading.value = true;
+        loading.value = false;
       });
   });
 };
@@ -182,7 +182,7 @@ const handleSubmit = async () => {
 
 <template>
   <el-form
-    class="login-view"
+    class="common-view login-view"
     ref="formRef"
     :model="form"
     :rules="rules"
@@ -190,7 +190,7 @@ const handleSubmit = async () => {
     v-loading="loading"
     element-loading-background="rgba(0, 0, 0, 0.2)"
   >
-    <div class="form-title">登录</div>
+    <div class="common-title">登录</div>
     <el-form-item prop="tel" class="form-item">
       <div
         class="form-label"
@@ -259,22 +259,7 @@ const handleSubmit = async () => {
 
 <style lang="scss" scoped>
 .login-view {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   width: 250px;
-  border: 1px solid white;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: var(--el-box-shadow-light);
-  padding: 20px 30px;
-  .form-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin: 15px;
-    color: var(--my-gray-dark-1);
-    letter-spacing: 2px;
-  }
   .form-item {
     position: relative;
     $length: 28px;

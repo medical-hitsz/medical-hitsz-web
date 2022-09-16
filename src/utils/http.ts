@@ -1,4 +1,5 @@
 import type { ApiResponsePromise } from "@/types/common";
+import type { AxiosResponse } from "axios";
 import { useUserStore } from "@/stores/user";
 import { ElMessage } from "element-plus";
 import axios from "axios";
@@ -16,28 +17,37 @@ const request = axios.create({
 request.interceptors.request.use(
   (config) => {
     const store = useUserStore();
-    config.headers.authorization = store.authorization;
+    if (store.authorization) {
+      config.headers.authorization = "Bearer " + store.authorization;
+    }
     return config;
   },
   (error) => {
-    ElMessage.error("请求发送失败！");
+    ElMessage.error(error);
     return Promise.reject(error);
   }
 );
 
 request.interceptors.response.use(
   (res) => {
-    if (res.status !== 200 || res.data?.code !== 200) {
+    if (res.status === 200 && res.data?.code !== 200) {
       const errMsg = res.data?.msg || "请求出错！";
       ElMessage.error(errMsg);
-      return Promise.reject(errMsg);
+      return Promise.reject(new Error(errMsg));
     } else {
       return Promise.resolve(res.data);
     }
   },
   (error) => {
-    ElMessage.error("请求出错！");
-    return Promise.reject(error);
+    const errorResponse = error.response as AxiosResponse<any>;
+    let errMsg;
+    if (errorResponse?.status === 401) {
+      errMsg = "请登录！";
+    } else {
+      errMsg = "请求出错！";
+    }
+    ElMessage.error(errMsg);
+    return Promise.reject(new Error(errMsg));
   }
 );
 
