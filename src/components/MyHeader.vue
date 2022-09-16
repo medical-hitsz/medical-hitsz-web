@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import IconLogout from "@/components/icons/IconLogout.vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { LogoUrl } from "@/constants/url";
 
 enum DropdownCommand {
   UserCenter,
@@ -45,22 +46,17 @@ const handleCommand = (command: DropdownCommand) => {
 
 <template>
   <header class="my-header">
-    <router-link to="/">
-      <h3 class="my-header-item">TODO 医疗会话</h3>
+    <router-link class="flex-row my-header-title" to="/">
+      <img :src="LogoUrl" class="my-header-title-logo" />
+      <div class="my-header-title-text">医疗会话</div>
     </router-link>
     <el-dropdown v-if="isLoggedIn" @command="handleCommand">
       <el-avatar class="my-header-avatar" :size="40" :src="user.avatar" />
       <template #dropdown>
         <el-dropdown-menu class="my-header-dropdown">
-          <el-tooltip
-            :content="`昵称：${user.nickname}`"
-            placement="left"
-            effect="light"
-          >
-            <div class="my-header-nickname">
-              {{ user.nickname }}
-            </div>
-          </el-tooltip>
+          <div class="my-header-nickname">
+            {{ user.nickname }}
+          </div>
           <el-dropdown-item :command="DropdownCommand.UserCenter" divided>
             <el-icon><User /></el-icon>
             <span>个人中心</span>
@@ -95,7 +91,18 @@ const handleCommand = (command: DropdownCommand) => {
     text-decoration: none;
     color: inherit;
   }
-  .my-header-item {
+  .my-header-title {
+    .my-header-title-logo {
+      width: 40px;
+      height: 40px;
+    }
+    .my-header-title-text {
+      color: var(--my-gray-dark-1);
+      font-size: 20px;
+      font-weight: 600;
+      margin-left: 10px;
+      letter-spacing: 1px;
+    }
   }
   .my-header-avatar {
     cursor: pointer;
@@ -103,15 +110,12 @@ const handleCommand = (command: DropdownCommand) => {
 }
 
 .my-header-dropdown {
-  width: 130px;
+  width: 120px;
   .my-header-nickname {
     font-size: 15px;
     margin: 5px 15px 10px;
     text-align: center;
     color: var(--my-gray-dark-1);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 </style>
