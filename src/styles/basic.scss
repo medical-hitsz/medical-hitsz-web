@@ -69,9 +69,27 @@ body,
     margin: 0;
 }
 
-#app{
+#app {
     display: flex;
     flex-direction: column;
     min-width: 800px;
     min-height: 500px;
+}
+
+#app {
+    ::-webkit-scrollbar {
+        width: 6px;
+        margin-right: 1px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba($color: #0003, $alpha: 0.2);
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            background-color: rgba($color: #0003, $alpha: 0.3);
+        }
+    }
+    ::-webkit-scrollbar-track {
+        border-radius: 10px;
+    }
 }

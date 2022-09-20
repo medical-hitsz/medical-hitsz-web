@@ -70,7 +70,7 @@ refreshUserInfo().then(() => {
 
 <template>
   <div class="common-view user-center-view">
-    <div class="common-title">个人中心</div>
+    <div class="common-title">用户中心</div>
     <AvatarUpload
       v-model="userData.avatar"
       :size="80"

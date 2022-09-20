@@ -4,7 +4,7 @@
   <div class="not-found-view">
     <el-empty
       class="not-found-content"
-      description="非常抱歉，没有找到您访问的界面..."
+      description="非常抱歉，没有找到您访问的页面..."
     />
   </div>
 </template>

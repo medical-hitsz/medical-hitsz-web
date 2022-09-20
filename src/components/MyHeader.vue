@@ -48,9 +48,9 @@ const handleCommand = (command: DropdownCommand) => {
   <header class="my-header">
     <router-link class="flex-row my-header-title" to="/">
       <img :src="LogoUrl" class="my-header-title-logo" />
-      <div class="my-header-title-text">医疗会话</div>
+      <div class="my-header-title-text">医疗诊疗会话系统</div>
     </router-link>
-    <el-dropdown v-if="isLoggedIn" @command="handleCommand">
+    <el-dropdown v-if="isLoggedIn" @command="handleCommand" size="large">
       <el-avatar class="my-header-avatar" :size="40" :src="user.avatar" />
       <template #dropdown>
         <el-dropdown-menu class="my-header-dropdown">
@@ -59,7 +59,7 @@ const handleCommand = (command: DropdownCommand) => {
           </div>
           <el-dropdown-item :command="DropdownCommand.UserCenter" divided>
             <el-icon><User /></el-icon>
-            <span>个人中心</span>
+            <span>用户中心</span>
           </el-dropdown-item>
           <el-dropdown-item :command="DropdownCommand.Logout">
             <el-icon><IconLogout /></el-icon>

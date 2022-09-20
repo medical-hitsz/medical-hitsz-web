@@ -69,3 +69,8 @@ export const getFileType = (path: string) => {
   }
   return format;
 };
+
+export const getDateFormat = (targetDate: Date, now?: Date) => {
+  const nowDate = now || new Date();
+  return targetDate.toLocaleString();
+};

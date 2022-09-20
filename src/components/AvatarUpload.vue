@@ -16,7 +16,7 @@ const props = defineProps<{
   size?: number;
 }>();
 const emit = defineEmits(["update:modelValue"]);
-const value = computed({
+const modelValue = computed({
   get() {
     return props.modelValue;
   },
@@ -79,7 +79,7 @@ const upload = (res: UploadRequestOptions) => {
       (_, data) => {
         if (data.statusCode === 200) {
           const urlImg = `https://${data.Location}`;
-          value.value = urlImg;
+          modelValue.value = urlImg;
           loading.value = false;
         }
       }
@@ -100,7 +100,7 @@ const upload = (res: UploadRequestOptions) => {
     :http-request="upload"
     accept="image/*"
   >
-    <el-avatar :size="size" :src="value" />
+    <el-avatar :size="size" :src="modelValue" />
     <div class="avatar-upload-mask">
       <el-icon :size="size / 2">
         <Upload />

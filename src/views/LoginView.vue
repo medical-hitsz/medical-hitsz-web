@@ -142,7 +142,9 @@ const inputFocus = reactive({
 });
 const handleFocus = (prop: "tel" | "msgCode", focus: boolean) => {
   inputFocus[prop] = focus;
-  formRef.value.clearValidate([prop]);
+  if (formRef.value?.clearValidate) {
+    formRef.value.clearValidate([prop]);
+  }
 };
 const labelTransfer = computed(() => {
   return {
@@ -153,11 +155,15 @@ const labelTransfer = computed(() => {
 
 const handleTelInput = (value: string) => {
   form.tel = filterNumberString(value, 11);
-  formRef.value.clearValidate(["tel"]);
+  if (formRef.value?.clearValidate) {
+    formRef.value.clearValidate(["tel"]);
+  }
 };
 const handleMsgCodeInput = (value: string) => {
   form.msgCode = filterNumberString(value, 6);
-  formRef.value.clearValidate(["msgCode"]);
+  if (formRef.value?.clearValidate) {
+    formRef.value?.clearValidate(["msgCode"]);
+  }
 };
 const handleSubmit = async () => {
   await formRef.value.validate((valid: boolean) => {
@@ -170,7 +176,7 @@ const handleSubmit = async () => {
       .then((res) => {
         const { data } = res;
         userStore.login(data.user, data.authorization);
-        router.push("/");
+        router.replace("/");
       })
       .catch()
       .finally(() => {
@@ -243,6 +249,7 @@ const handleSubmit = async () => {
         @input="handleMsgCodeInput"
         @focus="handleFocus('msgCode', true)"
         @blur="handleFocus('msgCode', false)"
+        @keyup.enter="handleSubmit"
       />
     </el-form-item>
     <el-button
