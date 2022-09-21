@@ -20,35 +20,29 @@ const modelValue = computed({
 const loading = ref(false);
 
 const roomList = reactive<ChatRoom[]>([]);
-const getRoomList = async (
-  remainCurrentRoom: boolean,
-  targetRoomID?: string
-) => {
+const getRoomList = async (targetRoomID?: string) => {
   try {
     loading.value = true;
-    const { data } = await chatApi.getRoomList();
+    const res = await chatApi.getRoomList();
+    const data = res.data || [];
     if (!data?.length) {
-      roomList.splice(0);
       modelValue.value = null;
     }
     const sortedArr = data.sort((room1, room2) => {
-      return room1.lastMsgTime - room2.lastMsgTime;
+      return room2.lastMsgTime - room1.lastMsgTime;
     });
     roomList.splice(0);
     roomList.push(...sortedArr);
-    if (remainCurrentRoom) {
+    if (!targetRoomID) {
+      modelValue.value = roomList[0];
       return;
     }
-    if (targetRoomID) {
-      const filteredRoomList = roomList.filter((room) => {
-        return room.roomID === targetRoomID;
-      });
-      modelValue.value = filteredRoomList.length
-        ? filteredRoomList[0]
-        : roomList[0];
-    } else {
-      modelValue.value = roomList[0];
-    }
+    const filteredRoomList = roomList.filter((room) => {
+      return room.roomID === targetRoomID;
+    });
+    modelValue.value = filteredRoomList.length
+      ? filteredRoomList[0]
+      : roomList[0];
   } catch {
     return;
   } finally {
@@ -75,7 +69,7 @@ const handleDeleteChatRoom = async (room: ChatRoom) => {
       type: "success",
       message: "删除成功！",
     });
-    await getRoomList(true, modelValue.value?.roomID);
+    await getRoomList(modelValue.value?.roomID);
   } catch {
     return;
   }
@@ -86,7 +80,9 @@ const handleCreateChatRoom = async () => {
     const { value } = await ElMessageBox.prompt("", "新建会话", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-      inputPattern: /\s+$|null{1}/g,
+      inputValidator: (val: string) => {
+        return val ? true : "会话名不能为空！";
+      },
       inputErrorMessage: "会话名不能为空！",
       inputPlaceholder: "请输入会话名",
     });
@@ -95,13 +91,13 @@ const handleCreateChatRoom = async () => {
       type: "success",
       message: `新建会话: ${value}`,
     });
-    await getRoomList(true, data.roomID);
+    await getRoomList(data.roomID);
   } catch {
     return;
   }
 };
 
-getRoomList(false);
+getRoomList();
 </script>
 
 <template>

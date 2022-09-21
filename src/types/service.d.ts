@@ -1,3 +1,5 @@
+export type timeMs = number;
+
 export declare interface CosSecret {
   credentials: {
     TmpSecretId: string;
@@ -22,11 +24,12 @@ export declare interface User {
 export declare interface ChatRoom {
   roomID: string;
   roomName: string;
-  lastMsgTime: number;
+  lastMsgTime: timeMs;
 }
 
 export declare interface Message {
+  msgID: number;
   msg: string;
   isUser: boolean;
-  createTime: number;
+  createTime: timeMs;
 }

@@ -2,7 +2,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import type { ChatRoom, Message } from "@/types/service";
 import { useUserStore } from "@/stores/user";
-import { LogoUrl } from "@/constants/url";
+import { LogoSUrl } from "@/constants/url";
 import { getDateFormat } from "@/utils/common";
 import chatApi from "@/api/chat";
 
@@ -22,17 +22,26 @@ const transformDate = (date: number) => {
   return getDateFormat(new Date(date), now.value);
 };
 const getMsgList = async () => {
-  loading.value = true;
-  const { data: newMsgList } = await chatApi.getMsgList({
-    id: currentChatRoom.value.roomID,
-  });
-  msgList.splice(0);
-  msgList.push(...newMsgList);
-  loading.value = false;
+  try {
+    loading.value = true;
+    const { data: newMsgList } = await chatApi.getMsgList({
+      id: currentChatRoom.value.roomID,
+    });
+    msgList.splice(0);
+    msgList.push(...newMsgList.sort((msg1, msg2) => msg1.msgID - msg2.msgID));
+  } catch {
+    return;
+  } finally {
+    loading.value = false;
+  }
 };
-watch(currentChatRoom, () => {
-  getMsgList();
-});
+watch(
+  currentChatRoom,
+  () => {
+    getMsgList();
+  },
+  { immediate: true }
+);
 
 const input = ref("");
 const handleEnter = () => {
@@ -74,7 +83,7 @@ const handleSubmit = () => {
           <el-avatar class="chat-window-msg-avatar" :src="user.avatar" />
         </div>
         <div v-else class="chat-window-msg">
-          <el-avatar class="chat-window-msg-avatar" :src="LogoUrl" />
+          <el-avatar class="chat-window-msg-avatar" :src="LogoSUrl" />
           <div class="chat-window-msg-body">
             <div class="chat-window-msg-top">
               <span class="chat-window-msg-name">医疗诊疗会话助手</span>

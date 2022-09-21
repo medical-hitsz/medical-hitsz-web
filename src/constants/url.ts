@@ -6,3 +6,6 @@ export const LogoUrl =
 
 export const LogoPngUrl =
   "https://medical-hitsz-1303960674.cos.ap-guangzhou.myqcloud.com/common/logo.png";
+
+export const LogoSUrl =
+  "https://medical-hitsz-1303960674.cos.ap-guangzhou.myqcloud.com/common/logoS.jpg";
