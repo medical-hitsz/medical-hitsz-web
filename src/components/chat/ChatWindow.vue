@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
-import type { ChatRoom, Message } from "@/types/service";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import type { ChatRoom, Message, SocketChatMessage } from "@/types/service";
 import { useUserStore } from "@/stores/user";
 import { LogoSUrl } from "@/constants/url";
 import { getDateFormat } from "@/utils/common";
 import chatApi from "@/api/chat";
+import type { WebSocketInterface } from "@/types/common";
+import { connectWebSocket } from "@/api/socket";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
@@ -15,6 +24,7 @@ const userStore = useUserStore();
 const user = computed(() => userStore.user);
 
 const loading = ref(false);
+const webSocket = ref<WebSocketInterface | null>(null);
 
 const msgList = reactive<Message[]>([]);
 const now = ref(new Date());
@@ -35,6 +45,41 @@ const getMsgList = async () => {
     loading.value = false;
   }
 };
+
+const sendMessage = (message: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (webSocket.value && currentChatRoom.value) {
+      webSocket.value
+        .sendMessage({ roomID: currentChatRoom.value.roomID, message })
+        .then(() => {
+          resolve();
+        });
+    } else {
+      reject();
+    }
+  });
+};
+
+const receiveMessage = (socketChatMessage: SocketChatMessage) => {
+  if (currentChatRoom.value?.roomID === socketChatMessage.roomID) {
+    console.log(socketChatMessage.message);
+    addMsg(socketChatMessage.message, false);
+  }
+};
+
+const connetWebSocket = () => {
+  webSocket.value = connectWebSocket(receiveMessage);
+};
+
+const addMsg = (msg: string, isUser: boolean) => {
+  msgList.push({
+    msgID: 0,
+    msg,
+    isUser,
+    createTime: new Date().valueOf(),
+  });
+};
+
 watch(
   currentChatRoom,
   () => {
@@ -51,9 +96,23 @@ const handleSubmit = () => {
   if (!input.value) {
     return;
   }
-  console.log(input.value);
+  const msg = input.value;
   input.value = "";
+  console.log(msg);
+  sendMessage(msg).then(() => {
+    addMsg(msg, true);
+  });
 };
+
+onMounted(() => {
+  connetWebSocket();
+});
+onBeforeUnmount(() => {
+  if (webSocket.value) {
+    webSocket.value.disconnect();
+    webSocket.value = null;
+  }
+});
 </script>
 
 <template>

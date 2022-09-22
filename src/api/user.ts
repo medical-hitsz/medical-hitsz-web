@@ -1,6 +1,6 @@
 import type { ApiResponsePromise } from "@/types/common";
 import type { User } from "@/types/service";
-import { get, post } from "@/utils/http";
+import { get, post } from "@/api/http";
 
 const apiGroup = "/api/v1/user";
 

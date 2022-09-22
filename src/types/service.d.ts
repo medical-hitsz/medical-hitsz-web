@@ -33,3 +33,8 @@ export declare interface Message {
   isUser: boolean;
   createTime: timeMs;
 }
+
+export declare interface SocketChatMessage {
+  roomID: string;
+  message: string;
+}

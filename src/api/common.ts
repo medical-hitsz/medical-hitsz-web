@@ -1,6 +1,6 @@
 import type { ApiResponsePromise } from "@/types/common";
 import type { CosConfig, CosSecret } from "@/types/service";
-import { get } from "@/utils/http";
+import { get } from "@/api/http";
 
 const apiGroup = "/api/v1/common";
 

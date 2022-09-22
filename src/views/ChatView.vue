@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import type { ChatRoom } from "@/types/service";
 import ChatRoomList from "@/components/chat/ChatRoomList.vue";
 import ChatWindow from "@/components/chat/ChatWindow.vue";
 import ChatEmpty from "@/components/chat/ChatEmpty.vue";
-import type { ChatRoom } from "@/types/service";
-import { ref } from "vue";
 
 const currentChatRoom = ref<ChatRoom | null>(null);
 </script>
