@@ -98,7 +98,6 @@ const handleSubmit = () => {
   }
   const msg = input.value;
   input.value = "";
-  console.log(msg);
   sendMessage(msg).then(() => {
     addMsg(msg, true);
   });
