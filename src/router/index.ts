@@ -43,7 +43,7 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const store = useUserStore();
   if (typeof to.meta.title === "string") {
-    document.title = `${to.meta.title} | 医疗诊疗会话系统`;
+    document.title = `${to.meta.title} | 智能诊疗会话系统`;
   }
 
   if (to.name !== "Login" && !store.isLoggedIn) {

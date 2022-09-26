@@ -23,6 +23,7 @@ const currentChatRoom = computed(() => props.currentChatRoom);
 const userStore = useUserStore();
 const user = computed(() => userStore.user);
 
+const systemName = "智能诊疗会话小助手";
 const loading = ref(false);
 const webSocket = ref<WebSocketInterface | null>(null);
 
@@ -144,7 +145,7 @@ onBeforeUnmount(() => {
           <el-avatar class="chat-window-msg-avatar" :src="LogoSUrl" />
           <div class="chat-window-msg-body">
             <div class="chat-window-msg-top">
-              <span class="chat-window-msg-name">医疗诊疗会话助手</span>
+              <span class="chat-window-msg-name">{{ systemName }}</span>
               <span class="chat-window-msg-time">
                 {{ transformDate(message.createTime) }}
               </span>
@@ -158,7 +159,7 @@ onBeforeUnmount(() => {
       <el-input
         class="chat-window-textarea"
         v-model="input"
-        placeholder="发送给 医疗诊疗会话系统"
+        :placeholder="`发送给 ${systemName}`"
         type="textarea"
         resize="none"
         autofocus

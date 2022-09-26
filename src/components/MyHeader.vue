@@ -48,7 +48,7 @@ const handleCommand = (command: DropdownCommand) => {
   <header class="my-header">
     <router-link class="flex-row my-header-title" to="/">
       <img :src="LogoUrl" class="my-header-title-logo" />
-      <div class="my-header-title-text">医疗诊疗会话系统</div>
+      <div class="my-header-title-text">智能诊疗会话系统</div>
     </router-link>
     <el-dropdown v-if="isLoggedIn" @command="handleCommand" size="large">
       <el-avatar class="my-header-avatar" :size="40" :src="user.avatar" />

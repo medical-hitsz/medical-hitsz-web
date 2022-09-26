@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import MyHeader from "@/components/MyHeader.vue";
+import MyFooter from "./components/MyFooter.vue";
 </script>
 
 <template>
@@ -8,20 +9,22 @@ import MyHeader from "@/components/MyHeader.vue";
   <main class="app-main">
     <RouterView />
   </main>
+  <MyFooter class="app-footer" />
 </template>
 
 <style lang="scss" scoped>
+$header-height: 60px;
 .app-header {
-  flex-grow: 0;
-  flex-shrink: 0;
+  height: $header-height;
 }
 .app-main {
-  flex-grow: 1;
-  flex-shrink: 1;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  min-height: calc(100% - $header-height + 1px);
+}
+.app-footer {
+  height: 80px;
 }
 </style>
