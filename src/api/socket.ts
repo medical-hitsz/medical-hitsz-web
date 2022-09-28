@@ -23,7 +23,7 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
     resolve: (value: void) => void;
   }[];
   constructor(messageHandler: (socketChatMessage: SocketChatMessage) => void) {
-    super(import.meta.env.VITE_SOCKET_BASE_API + "/api/v1/web-socket/connect");
+    super(import.meta.env.VITE_SOCKET_BASE_API + "/websocket/v1/connect");
     this._state = WebSocketState.BeforeConnect;
     this._messageHandlers = {};
     this._messageToSendQueue = [];
@@ -66,9 +66,7 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
     this.onmessage = ({ data }) => {
       this._messageHandleController(JSON.parse(data as string));
     };
-    this.onerror = (event) => {
-      console.log(event);
-    };
+    this.onerror = () => {};
   }
 
   _send<T>(socketMessage: SocketMessage<T>) {
