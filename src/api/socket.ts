@@ -64,7 +64,7 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
       });
     };
     this.onmessage = ({ data }) => {
-      this._messageHandleController(data);
+      this._messageHandleController(JSON.parse(data as string));
     };
     this.onerror = (event) => {
       console.log(event);

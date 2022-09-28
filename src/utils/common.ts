@@ -72,19 +72,24 @@ export const getFileType = (path: string) => {
 
 export const getDateFormat = (targetDate: Date, now?: Date) => {
   const nowDate = now || new Date();
+  const hours = targetDate.getHours();
+  const minutes =
+    targetDate.getMinutes() < 10
+      ? "0" + targetDate.getMinutes()
+      : targetDate.getMinutes();
   if (targetDate.toDateString() === nowDate.toDateString()) {
-    return `${targetDate.getHours()}:${targetDate.getMinutes()}`;
+    return `今天 ${hours}:${minutes}`;
   }
   const yesterdayDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
   if (targetDate.toDateString() === yesterdayDate.toDateString()) {
-    return `昨天 ${targetDate.getHours()}:${targetDate.getMinutes()}`;
+    return `昨天 ${hours}:${minutes}`;
   }
   if (targetDate.getFullYear() === nowDate.getFullYear()) {
     return `${
       targetDate.getMonth() + 1
-    }/${targetDate.getDate()} ${targetDate.getHours()}:${targetDate.getMinutes()}`;
+    }/${targetDate.getDate()} ${hours}:${minutes}`;
   }
   return `${targetDate.getFullYear()}/${
     targetDate.getMonth() + 1
-  }/${targetDate.getDate()} ${targetDate.getHours()}:${targetDate.getMinutes()}`;
+  }/${targetDate.getDate()} ${targetDate.getHours()}:${minutes}`;
 };

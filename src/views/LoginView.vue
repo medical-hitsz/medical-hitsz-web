@@ -178,7 +178,7 @@ const handleSubmit = async () => {
         userStore.login(data.user, data.authorization);
         router.replace("/");
       })
-      .catch()
+      .catch(() => {})
       .finally(() => {
         loading.value = false;
       });

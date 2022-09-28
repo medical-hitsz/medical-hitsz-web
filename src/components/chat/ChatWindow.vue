@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   reactive,
@@ -14,6 +15,7 @@ import { getDateFormat } from "@/utils/common";
 import chatApi from "@/api/chat";
 import type { WebSocketInterface } from "@/types/common";
 import { connectWebSocket } from "@/api/socket";
+import type { ElScrollbar } from "element-plus";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
@@ -22,6 +24,9 @@ const currentChatRoom = computed(() => props.currentChatRoom);
 
 const userStore = useUserStore();
 const user = computed(() => userStore.user);
+
+const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>();
+const scrollbarInnerRef = ref<HTMLDivElement>();
 
 const systemName = "智能诊疗会话小助手";
 const loading = ref(false);
@@ -63,7 +68,6 @@ const sendMessage = (message: string): Promise<void> => {
 
 const receiveMessage = (socketChatMessage: SocketChatMessage) => {
   if (currentChatRoom.value?.roomID === socketChatMessage.roomID) {
-    console.log(socketChatMessage.message);
     addMsg(socketChatMessage.message, false);
   }
 };
@@ -89,18 +93,26 @@ watch(
   { immediate: true }
 );
 
+watch(msgList, () => {
+  nextTick(() => {
+    if (scrollbarInnerRef.value?.clientHeight) {
+      scrollbarRef.value?.setScrollTop(scrollbarInnerRef.value.clientHeight);
+    }
+  });
+});
+
 const input = ref("");
 const handleEnter = () => {
   input.value += "\n";
 };
 const handleSubmit = () => {
-  if (!input.value) {
+  const handledInput = input.value.trimEnd();
+  if (!handledInput) {
     return;
   }
-  const msg = input.value;
   input.value = "";
-  sendMessage(msg).then(() => {
-    addMsg(msg, true);
+  sendMessage(handledInput).then(() => {
+    addMsg(handledInput, true);
   });
 };
 
@@ -124,36 +136,38 @@ onBeforeUnmount(() => {
     <div class="chat-window-title">
       {{ currentChatRoom.roomName }}
     </div>
-    <el-scrollbar class="chat-window-body">
-      <template v-for="message in msgList" :key="message.createTime">
-        <div
-          v-if="message.isUser"
-          class="chat-window-msg chat-window-msg-right"
-        >
-          <div class="chat-window-msg-body">
-            <div class="chat-window-msg-top">
-              <span class="chat-window-msg-time">
-                {{ transformDate(message.createTime) }}
-              </span>
-              <span class="chat-window-msg-name">{{ user.nickname }}</span>
+    <el-scrollbar class="chat-window-body" ref="scrollbarRef">
+      <div class="chat-window-inner-body" ref="scrollbarInnerRef">
+        <template v-for="message in msgList" :key="message.createTime">
+          <div
+            v-if="message.isUser"
+            class="chat-window-msg chat-window-msg-right"
+          >
+            <div class="chat-window-msg-body">
+              <div class="chat-window-msg-top">
+                <span class="chat-window-msg-time">
+                  {{ transformDate(message.createTime) }}
+                </span>
+                <span class="chat-window-msg-name">{{ user.nickname }}</span>
+              </div>
+              <div class="chat-window-msg-content">{{ message.msg }}</div>
             </div>
-            <div class="chat-window-msg-content">{{ message.msg }}</div>
+            <el-avatar class="chat-window-msg-avatar" :src="user.avatar" />
           </div>
-          <el-avatar class="chat-window-msg-avatar" :src="user.avatar" />
-        </div>
-        <div v-else class="chat-window-msg">
-          <el-avatar class="chat-window-msg-avatar" :src="LogoSUrl" />
-          <div class="chat-window-msg-body">
-            <div class="chat-window-msg-top">
-              <span class="chat-window-msg-name">{{ systemName }}</span>
-              <span class="chat-window-msg-time">
-                {{ transformDate(message.createTime) }}
-              </span>
+          <div v-else class="chat-window-msg">
+            <el-avatar class="chat-window-msg-avatar" :src="LogoSUrl" />
+            <div class="chat-window-msg-body">
+              <div class="chat-window-msg-top">
+                <span class="chat-window-msg-name">{{ systemName }}</span>
+                <span class="chat-window-msg-time">
+                  {{ transformDate(message.createTime) }}
+                </span>
+              </div>
+              <div class="chat-window-msg-content">{{ message.msg }}</div>
             </div>
-            <div class="chat-window-msg-content">{{ message.msg }}</div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
     </el-scrollbar>
     <div class="chat-window-footer">
       <el-input
@@ -195,15 +209,18 @@ onBeforeUnmount(() => {
     overflow: hidden;
     :deep(.el-scrollbar__wrap) {
       width: 100%;
-      .el-scrollbar__view {
+      .chat-window-inner-body {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         .chat-window-msg {
           display: flex;
-          margin: 10px 20px;
+          margin: 20px 20px 0;
           max-width: calc(100% - 100px);
+          &:last-child {
+            margin-bottom: 20px;
+          }
           .chat-window-msg-avatar {
             flex-shrink: 0;
           }
@@ -241,11 +258,16 @@ onBeforeUnmount(() => {
         }
         .chat-window-msg-right {
           align-self: flex-end;
-          .chat-window-msg-content {
-            background-color: var(--el-color-primary-light-3) !important;
-            color: var(--my-white) !important;
-            border: 1px solid var(--el-color-primary-light-3) !important;
-            margin-left: auto;
+          .chat-window-msg-body {
+            .chat-window-msg-top {
+              text-align: right;
+            }
+            .chat-window-msg-content {
+              background-color: var(--el-color-primary-light-3) !important;
+              color: var(--my-white) !important;
+              border: 1px solid var(--el-color-primary-light-3) !important;
+              margin-left: auto;
+            }
           }
         }
       }

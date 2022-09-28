@@ -29,7 +29,7 @@ const logout = () => {
       });
       router.push("/login");
     })
-    .catch();
+    .catch(() => {});
 };
 
 const handleCommand = (command: DropdownCommand) => {

@@ -38,7 +38,7 @@ commonApi
   .then((res) => {
     cosConfig.value = res.data;
   })
-  .catch();
+  .catch(() => {});
 
 const cos = new COS({
   getAuthorization: function (_, callback) {
