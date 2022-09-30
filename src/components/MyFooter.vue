@@ -12,7 +12,7 @@ import { BeianUrl } from "@/constants/url";
         粤ICP备 2022117057号-1
       </a>
       <a
-        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502009416"
+        href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502009416"
         target="_blank"
       >
         <img :src="BeianUrl" class="my-footer-text-icon" />
