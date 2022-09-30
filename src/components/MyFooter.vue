@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { BeianUrl } from "@/constants/url";
+</script>
 
 <template>
   <footer class="my-footer">
@@ -7,10 +9,14 @@
     </div>
     <div class="my-footer-text">
       <a href="https://beian.miit.gov.cn" target="_blank">
-        粤ICP备2022117057号-1
+        粤ICP备 2022117057号-1
       </a>
-      <a href="https://beian.miit.gov.cn" target="_blank">
-        粤公网安备 todotodotodo号
+      <a
+        href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030502009416"
+        target="_blank"
+      >
+        <img :src="BeianUrl" class="my-footer-text-icon" />
+        <span>粤公网安备 44030502009416号</span>
       </a>
     </div>
     <div class="my-footer-text">
@@ -46,7 +52,13 @@
     font-size: 15px;
   }
   .my-footer-text {
+    line-height: 15px;
     font-size: 12px;
+    .my-footer-text-icon {
+      height: 13px;
+      margin-right: 2px;
+      vertical-align: middle;
+    }
   }
 }
 </style>

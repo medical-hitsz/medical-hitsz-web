@@ -9,3 +9,6 @@ export const LogoPngUrl =
 
 export const LogoSUrl =
   "https://medical-hitsz-1303960674.cos.ap-guangzhou.myqcloud.com/common/logoS.jpg";
+
+export const BeianUrl =
+  "https://medical-hitsz-1303960674.cos.ap-guangzhou.myqcloud.com/common/beian.png";
