@@ -5,7 +5,7 @@ import { BeianUrl } from "@/constants/url";
 <template>
   <footer class="my-footer">
     <div class="my-footer-title">
-      <router-link to="/">医疗诊疗会话系统</router-link>
+      <router-link to="/">智能诊疗会话系统</router-link>
     </div>
     <div class="my-footer-text">
       <a href="https://beian.miit.gov.cn" target="_blank">
