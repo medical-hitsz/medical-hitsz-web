@@ -14,6 +14,7 @@ import type { CosConfig } from "@/types/service";
 const props = defineProps<{
   modelValue: string;
   size?: number;
+  hoverDisable?: boolean;
 }>();
 const emit = defineEmits(["update:modelValue"]);
 const modelValue = computed({
@@ -101,7 +102,7 @@ const upload = (res: UploadRequestOptions) => {
     accept="image/*"
   >
     <el-avatar :size="size" :src="modelValue" />
-    <div class="avatar-upload-mask">
+    <div v-if="!(props.hoverDisable || false)" class="avatar-upload-mask">
       <el-icon :size="size / 2">
         <Upload />
       </el-icon>

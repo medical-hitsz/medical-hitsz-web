@@ -1,6 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import userApi from "@/api/user";
+import { uerAgentIsPC } from "@/utils/common";
+
+const ChatView = uerAgentIsPC
+  ? import("@/views/pc/ChatView.vue")
+  : import("@/views/mobile/ChatView.vue");
+const LoginView = uerAgentIsPC
+  ? import("@/views/pc/LoginView.vue")
+  : import("@/views/mobile/LoginView.vue");
+const UserCenterView = uerAgentIsPC
+  ? import("@/views/pc/UserCenterView.vue")
+  : import("@/views/mobile/UserCenterView.vue");
+const NotFoundView = uerAgentIsPC
+  ? import("@/views/pc/NotFoundView.vue")
+  : import("@/views/mobile/NotFoundView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +22,7 @@ const router = createRouter({
     {
       path: "/",
       name: "Chat",
-      component: () => import("@/views/ChatView.vue"),
+      component: ChatView,
       meta: {
         title: "主页",
       },
@@ -16,7 +30,7 @@ const router = createRouter({
     {
       path: "/login",
       name: "Login",
-      component: () => import("@/views/LoginView.vue"),
+      component: LoginView,
       meta: {
         title: "用户登录",
       },
@@ -24,7 +38,7 @@ const router = createRouter({
     {
       path: "/user-center",
       name: "UserCenter",
-      component: () => import("@/views/UserCenterView.vue"),
+      component: UserCenterView,
       meta: {
         title: "用户中心",
       },
@@ -32,7 +46,7 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)",
       name: "NotFound",
-      component: () => import("@/views/NotFoundView.vue"),
+      component: NotFoundView,
       meta: {
         title: "页面未找到",
       },

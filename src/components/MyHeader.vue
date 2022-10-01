@@ -75,7 +75,7 @@ const handleCommand = (command: DropdownCommand) => {
 <style lang="scss" scoped>
 .my-header {
   width: 100%;
-  height: 60px;
+  box-sizing: border-box;
   z-index: 1000;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.09);

@@ -188,7 +188,7 @@ const handleSubmit = async () => {
 
 <template>
   <el-form
-    class="common-view login-view"
+    class="common-view login-form"
     ref="formRef"
     :model="form"
     :rules="rules"
@@ -265,8 +265,7 @@ const handleSubmit = async () => {
 </template>
 
 <style lang="scss" scoped>
-.login-view {
-  width: 250px;
+.login-form {
   .form-item {
     position: relative;
     $length: 28px;

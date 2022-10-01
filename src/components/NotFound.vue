@@ -11,11 +11,6 @@
 
 <style lang="scss" scoped>
 .not-found-view {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   .not-found-content {
     margin-bottom: 50px;
   }

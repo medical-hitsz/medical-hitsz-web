@@ -70,11 +70,8 @@ body,
 }
 
 #app {
-    min-width: 800px;
-    min-height: 500px;
-}
-
-#app {
+    box-sizing: border-box;
+    word-spacing: 1px;
     ::-webkit-scrollbar {
         width: 6px;
         margin-right: 1px;
