@@ -6,15 +6,37 @@ import ChatWindow from "@/components/chat/ChatWindow.vue";
 import ChatEmpty from "@/components/chat/ChatEmpty.vue";
 
 const currentChatRoom = ref<ChatRoom | null>(null);
+const sidebarVisible = ref(false);
+const setSidebarVisible = () => {
+  sidebarVisible.value = true;
+};
+
+const handleClickModal = () => {
+  if (currentChatRoom.value) {
+    sidebarVisible.value = false;
+  }
+};
 </script>
 
 <template>
-  <div class="common-view chat-view">
-    <ChatRoomList v-model="currentChatRoom" class="chat-sidebar" />
+  <div class="chat-view">
+    <div
+      class="chat-modal"
+      v-show="sidebarVisible"
+      @click.self="handleClickModal"
+    >
+      <ChatRoomList
+        v-model="currentChatRoom"
+        class="chat-sidebar"
+        :always-show-delete="true"
+        :set-sidebar-visible="setSidebarVisible"
+      />
+    </div>
     <ChatWindow
       v-if="currentChatRoom"
-      :currentChatRoom="currentChatRoom"
+      :current-chat-room="currentChatRoom"
       class="chat-main"
+      :set-sidebar-visible="setSidebarVisible"
     />
     <ChatEmpty class="chat-main" v-else />
   </div>
@@ -22,17 +44,21 @@ const currentChatRoom = ref<ChatRoom | null>(null);
 
 <style lang="scss" scoped>
 .chat-view {
-  display: flex;
-  flex-direction: row;
-  height: calc(100% - 80px);
-  width: calc(30% + 500px);
-  .chat-sidebar {
-    flex-shrink: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  .chat-modal {
+    position: absolute;
+    width: 100%;
     height: 100%;
-    margin-right: 10px;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    z-index: 100;
+    .chat-sidebar {
+      width: 50%;
+      height: 100%;
+    }
   }
   .chat-main {
-    flex-grow: 1;
     height: 100%;
   }
 }

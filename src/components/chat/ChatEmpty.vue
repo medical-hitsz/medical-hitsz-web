@@ -12,8 +12,7 @@ import { LogoUrl } from "@/constants/url";
 .chat-empty {
   justify-content: center;
   .chat-empty-image {
-    width: 200px;
-    height: 200px;
+    width: 30%;
     opacity: 10%;
   }
 }

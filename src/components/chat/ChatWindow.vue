@@ -19,6 +19,7 @@ import type { ElScrollbar } from "element-plus";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
+  setSidebarVisible?: () => void;
 }>();
 const currentChatRoom = computed(() => props.currentChatRoom);
 
@@ -133,8 +134,18 @@ onBeforeUnmount(() => {
     v-loading="loading"
     element-loading-background="rgba(255, 255, 255, 0.7)"
   >
-    <div class="chat-window-title">
-      {{ currentChatRoom.roomName }}
+    <div
+      class="chat-window-title"
+      :class="{ 'chat-window-title-no-radius': setSidebarVisible }"
+    >
+      <el-icon
+        class="chat-window-title-expand"
+        v-if="setSidebarVisible"
+        @click="setSidebarVisible"
+      >
+        <Expand />
+      </el-icon>
+      <span>{{ currentChatRoom.roomName }}</span>
     </div>
     <el-scrollbar class="chat-window-body" ref="scrollbarRef">
       <div class="chat-window-inner-body" ref="scrollbarInnerRef">
@@ -187,11 +198,9 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .chat-window {
-  width: 200px;
   background-color: var(--el-color-primary-light-9);
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
   .chat-window-title {
     flex-shrink: 0;
     font-size: 17px;
@@ -202,6 +211,18 @@ onBeforeUnmount(() => {
     background-color: #8ec5fc;
     background-image: linear-gradient(90deg, #8ec5fc 0%, #e0c3fc 100%);
     border-radius: 10px 10px 0 0;
+    text-align: center;
+    position: relative;
+  }
+  .chat-window-title-expand {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
+  .chat-window-title-no-radius {
+    border-radius: 0 0 0 0;
   }
   .chat-window-body {
     width: 100%;

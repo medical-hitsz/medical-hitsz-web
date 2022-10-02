@@ -30,10 +30,14 @@ const currentChatRoom = ref<ChatRoom | null>(null);
     flex-shrink: 0;
     height: 100%;
     margin-right: 10px;
+    width: 200px;
+    border-radius: 10px;
   }
   .chat-main {
     flex-grow: 1;
     height: 100%;
+    width: 200px;
+    border-radius: 10px;
   }
 }
 </style>

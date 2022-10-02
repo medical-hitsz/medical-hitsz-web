@@ -6,6 +6,7 @@ import chatApi from "@/api/chat";
 
 const props = defineProps<{
   modelValue: ChatRoom | null;
+  setSidebarVisible?: () => void;
 }>();
 const emit = defineEmits(["update:modelValue"]);
 const modelValue = computed({
@@ -47,6 +48,9 @@ const getRoomList = async (targetRoomID?: string) => {
     return;
   } finally {
     loading.value = false;
+    if (props.setSidebarVisible && roomList.length === 0) {
+      props.setSidebarVisible();
+    }
   }
 };
 
@@ -123,6 +127,9 @@ getRoomList();
         <el-icon
           @click.stop="handleDeleteChatRoom(room)"
           class="chat-room-list-item-close"
+          :class="{
+            'chat-room-list-item-close-always-show': props.setSidebarVisible,
+          }"
           :size="18"
         >
           <CircleCloseFilled />
@@ -141,13 +148,11 @@ getRoomList();
 
 <style lang="scss" scoped>
 .chat-room-list {
-  width: 200px;
   background-color: var(--el-color-primary-light-9);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  border-radius: 10px;
   .chat-room-list-count {
     flex-shrink: 0;
     $height: 30px;
@@ -179,6 +184,9 @@ getRoomList();
       .chat-room-list-item-close {
         color: var(--my-gray-dark-1);
         visibility: hidden;
+      }
+      .chat-room-list-item-close-always-show {
+        visibility: visible;
       }
       &:hover {
         background-color: var(--el-color-primary-light-5);
