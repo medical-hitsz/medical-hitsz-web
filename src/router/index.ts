@@ -3,26 +3,19 @@ import { useUserStore } from "@/stores/user";
 import userApi from "@/api/user";
 import { uerAgentIsPC } from "@/utils/common";
 
-const ChatView = uerAgentIsPC
-  ? import("@/views/pc/ChatView.vue")
-  : import("@/views/mobile/ChatView.vue");
-const LoginView = uerAgentIsPC
-  ? import("@/views/pc/LoginView.vue")
-  : import("@/views/mobile/LoginView.vue");
-const UserCenterView = uerAgentIsPC
-  ? import("@/views/pc/UserCenterView.vue")
-  : import("@/views/mobile/UserCenterView.vue");
-const NotFoundView = uerAgentIsPC
-  ? import("@/views/pc/NotFoundView.vue")
-  : import("@/views/mobile/NotFoundView.vue");
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
       name: "Chat",
-      component: ChatView,
+      component: () => {
+        if (uerAgentIsPC()) {
+          return import("@/views/pc/ChatView.vue");
+        } else {
+          return import("@/views/mobile/ChatView.vue");
+        }
+      },
       meta: {
         title: "主页",
       },
@@ -30,7 +23,13 @@ const router = createRouter({
     {
       path: "/login",
       name: "Login",
-      component: LoginView,
+      component: () => {
+        if (uerAgentIsPC()) {
+          return import("@/views/pc/LoginView.vue");
+        } else {
+          return import("@/views/mobile/LoginView.vue");
+        }
+      },
       meta: {
         title: "用户登录",
       },
@@ -38,7 +37,13 @@ const router = createRouter({
     {
       path: "/user-center",
       name: "UserCenter",
-      component: UserCenterView,
+      component: () => {
+        if (uerAgentIsPC()) {
+          return import("@/views/pc/UserCenterView.vue");
+        } else {
+          return import("@/views/mobile/UserCenterView.vue");
+        }
+      },
       meta: {
         title: "用户中心",
       },
@@ -46,7 +51,13 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)",
       name: "NotFound",
-      component: NotFoundView,
+      component: () => {
+        if (uerAgentIsPC()) {
+          return import("@/views/pc/NotFoundView.vue");
+        } else {
+          return import("@/views/mobile/NotFoundView.vue");
+        }
+      },
       meta: {
         title: "页面未找到",
       },

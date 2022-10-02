@@ -3,18 +3,17 @@ import { RouterView } from "vue-router";
 import MyHeader from "@/components/MyHeader.vue";
 import MyFooter from "./components/MyFooter.vue";
 import { uerAgentIsPC } from "@/utils/common";
+
+const isPC = uerAgentIsPC();
 </script>
 
 <template>
-  <div
-    class="app-view"
-    :class="uerAgentIsPC ? 'app-view-pc' : 'app-view-mobile'"
-  >
+  <div class="app-view" :class="isPC ? 'app-view-pc' : 'app-view-mobile'">
     <MyHeader class="app-header" />
     <main class="app-main">
       <RouterView />
     </main>
-    <MyFooter v-if="uerAgentIsPC" class="app-footer" />
+    <MyFooter v-if="isPC" class="app-footer" />
   </div>
 </template>
 
