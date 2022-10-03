@@ -7,8 +7,8 @@ import ChatEmpty from "@/components/chat/ChatEmpty.vue";
 
 const currentChatRoom = ref<ChatRoom | null>(null);
 const sidebarVisible = ref(false);
-const setSidebarVisible = () => {
-  sidebarVisible.value = true;
+const setSidebarVisible = (visible = true) => {
+  sidebarVisible.value = visible;
 };
 
 const handleClickModal = () => {
@@ -53,12 +53,12 @@ const handleClickModal = () => {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 1000;
     .chat-sidebar {
       width: 60%;
       height: 100%;
-      transition: width 0.2s;
+      transition: width 0.2s ease;
     }
   }
   .v-enter-active,

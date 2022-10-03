@@ -6,7 +6,7 @@ import chatApi from "@/api/chat";
 
 const props = defineProps<{
   modelValue: ChatRoom | null;
-  setSidebarVisible?: () => void;
+  setSidebarVisible?: (visible?: boolean) => void;
 }>();
 const emit = defineEmits(["update:modelValue"]);
 const modelValue = computed({
@@ -50,12 +50,15 @@ const getRoomList = async (targetRoomID?: string) => {
     loading.value = false;
     if (props.setSidebarVisible && roomList.length === 0) {
       props.setSidebarVisible();
+    } else {
+      props.setSidebarVisible && props.setSidebarVisible(false);
     }
   }
 };
 
 const handleChosenChatRoom = (room: ChatRoom) => {
   modelValue.value = room;
+  props.setSidebarVisible && props.setSidebarVisible(false);
 };
 
 const handleDeleteChatRoom = async (room: ChatRoom) => {

@@ -140,8 +140,7 @@ onBeforeUnmount(() => {
   }
 });
 
-console.log(getStorage(headerVisibleKey));
-if (getStorage(headerVisibleKey) === false) {
+if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
   handleHeaderHide();
 }
 </script>
