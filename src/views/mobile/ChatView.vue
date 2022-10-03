@@ -23,9 +23,9 @@ const handleTouchStart = (e: TouchEvent) => {
 };
 const handleTouchMove = (e: TouchEvent) => {
   const x = e.touches[0].clientX;
-  if (x - touchStart.x > 100) {
+  if (x - touchStart.x > 30) {
     setSidebarVisible(true);
-  } else if (x - touchStart.x < -100) {
+  } else if (x - touchStart.x < -30) {
     handleClickModal();
   }
 };
@@ -80,11 +80,11 @@ const handleTouchMove = (e: TouchEvent) => {
   }
   .v-enter-active,
   .v-leave-active {
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease;
   }
   .v-enter-from,
   .v-leave-to {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0);
     .chat-sidebar {
       width: 0;
     }
