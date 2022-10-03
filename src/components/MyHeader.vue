@@ -5,11 +5,15 @@ import IconLogout from "@/components/icons/IconLogout.vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { LogoUrl } from "@/constants/url";
+import { ref } from "vue";
+import { userAgentIsPC } from "@/utils/common";
 
 enum DropdownCommand {
   UserCenter,
   Logout,
 }
+
+const elDropdownRef = ref();
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -42,6 +46,22 @@ const handleCommand = (command: DropdownCommand) => {
       break;
   }
 };
+
+const isPC = userAgentIsPC();
+const mobileDropdownShow = ref(false);
+const handleDropdownVisibleChange = (visible: boolean) => {
+  mobileDropdownShow.value = visible;
+};
+
+const handleClickAvatar = () => {
+  if (!isPC) {
+    if (mobileDropdownShow.value) {
+      elDropdownRef.value.handleClose();
+    } else {
+      elDropdownRef.value.handleOpen();
+    }
+  }
+};
 </script>
 
 <template>
@@ -50,8 +70,19 @@ const handleCommand = (command: DropdownCommand) => {
       <img :src="LogoUrl" class="my-header-title-logo" />
       <div class="my-header-title-text">智能诊疗会话系统</div>
     </router-link>
-    <el-dropdown v-if="isLoggedIn" @command="handleCommand" size="large">
-      <el-avatar class="my-header-avatar" :size="40" :src="user.avatar" />
+    <el-dropdown
+      ref="elDropdownRef"
+      v-if="isLoggedIn"
+      @command="handleCommand"
+      @visible-change="handleDropdownVisibleChange"
+      size="large"
+    >
+      <el-avatar
+        @click="handleClickAvatar"
+        class="my-header-avatar"
+        :size="40"
+        :src="user.avatar"
+      />
       <template #dropdown>
         <el-dropdown-menu class="my-header-dropdown">
           <div class="my-header-nickname">

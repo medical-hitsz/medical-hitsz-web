@@ -2,12 +2,13 @@
 import AvatarUpload from "@/components/AvatarUpload.vue";
 import { useUserStore } from "@/stores/user";
 import type { User } from "@/types/service";
-import { reactive, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import userAPi from "@/api/user";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-const userStore = useUserStore();
+const avatarUploadRef = ref<InstanceType<typeof AvatarUpload> | null>(null);
 
+const userStore = useUserStore();
 const userData = reactive<User>(userStore.user);
 
 const userDataTransform = reactive({
@@ -46,6 +47,19 @@ const updateUserInfo = async (params: {
   }
 };
 
+const handleClickAvatar = (e: MouseEvent) => {
+  const avatarUploadDom = avatarUploadRef.value?.$el.children[0];
+  if (avatarUploadDom.contains) {
+    if (!avatarUploadDom.contains(e.target)) {
+      avatarUploadDom.click();
+    }
+  } else if (avatarUploadDom.compareDocumentPosition) {
+    if (!(avatarUploadDom.compareDocumentPosition(e.target) & 16)) {
+      avatarUploadDom.click();
+    }
+  }
+};
+
 const handleClickNickname = async () => {
   try {
     const { value } = await ElMessageBox.prompt("", "修改昵称", {
@@ -76,10 +90,11 @@ refreshUserInfo().then(() => {
 <template>
   <div class="user-center-view">
     <div class="user-center-title">用户中心</div>
-    <div class="flex-row user-center-item">
+    <div class="flex-row user-center-item" @click.prevent="handleClickAvatar">
       <div class="user-center-left">头像</div>
       <div class="user-center-right flex-row">
         <AvatarUpload
+          ref="avatarUploadRef"
           v-model="userData.avatar"
           :size="50"
           :hoverDisable="true"

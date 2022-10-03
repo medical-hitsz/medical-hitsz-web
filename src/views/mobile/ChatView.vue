@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import type { ChatRoom } from "@/types/service";
 import ChatRoomList from "@/components/chat/ChatRoomList.vue";
 import ChatWindow from "@/components/chat/ChatWindow.vue";
@@ -13,13 +13,30 @@ const setSidebarVisible = (visible = true) => {
 
 const handleClickModal = () => {
   if (currentChatRoom.value) {
-    sidebarVisible.value = false;
+    setSidebarVisible(false);
+  }
+};
+
+const touchStart = reactive({ x: 0, y: 0 });
+const handleTouchStart = (e: TouchEvent) => {
+  touchStart.x = e.touches[0].clientX;
+};
+const handleTouchMove = (e: TouchEvent) => {
+  const x = e.touches[0].clientX;
+  if (x - touchStart.x > 100) {
+    setSidebarVisible(true);
+  } else if (x - touchStart.x < -100) {
+    handleClickModal();
   }
 };
 </script>
 
 <template>
-  <div class="chat-view">
+  <div
+    class="chat-view"
+    @touchstart="handleTouchStart"
+    @touchmove="handleTouchMove"
+  >
     <Transition>
       <div
         class="chat-modal"
