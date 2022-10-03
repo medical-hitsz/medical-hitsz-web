@@ -1,10 +1,12 @@
 import type { User } from "@/types/service";
 import {
+  setStringStorage,
+  getStringStorage,
   clearStorage,
-  getAuthorization,
-  setAuthorization,
 } from "@/utils/storage";
 import { defineStore } from "pinia";
+
+const AUTHORIZATION_KEY = "__MEDICAL_HITSZ_AUTHORIZATION";
 
 export const useUserStore = defineStore({
   id: "user",
@@ -15,7 +17,7 @@ export const useUserStore = defineStore({
   }),
   getters: {
     authorization(state) {
-      return state._authorization || getAuthorization();
+      return state._authorization || getStringStorage(AUTHORIZATION_KEY);
     },
   },
   actions: {
@@ -23,11 +25,10 @@ export const useUserStore = defineStore({
       this.user = user;
     },
     login(user: User, authorization: string) {
-      clearStorage();
       this.user = user;
       this.isLoggedIn = true;
       this._authorization = authorization;
-      setAuthorization(authorization);
+      setStringStorage(AUTHORIZATION_KEY, authorization);
     },
     logout() {
       this.user = { nickname: "", avatar: "" };

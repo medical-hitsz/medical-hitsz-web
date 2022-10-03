@@ -17,6 +17,7 @@ import type { WebSocketInterface } from "@/types/common";
 import { connectWebSocket } from "@/api/socket";
 import type { ElScrollbar } from "element-plus";
 import { useCommonStore } from "@/stores/common";
+import { setStorage, getStorage } from "@/utils/storage";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
@@ -34,6 +35,7 @@ const scrollbarInnerRef = ref<HTMLDivElement>();
 const systemName = "智能诊疗会话小助手";
 const loading = ref(false);
 const webSocket = ref<WebSocketInterface | null>(null);
+const headerVisibleKey = "headerVisible";
 
 const msgList = reactive<Message[]>([]);
 const now = ref(new Date());
@@ -121,9 +123,11 @@ const handleSubmit = () => {
 
 const handleHeaderShow = () => {
   commonStore.setHeaderVisible(true);
+  setStorage(headerVisibleKey, true);
 };
 const handleHeaderHide = () => {
   commonStore.setHeaderVisible(false);
+  setStorage(headerVisibleKey, false);
 };
 
 onMounted(() => {
@@ -135,6 +139,11 @@ onBeforeUnmount(() => {
     webSocket.value = null;
   }
 });
+
+console.log(getStorage(headerVisibleKey));
+if (getStorage(headerVisibleKey) === false) {
+  handleHeaderHide();
+}
 </script>
 
 <template>

@@ -15,7 +15,9 @@ if (!isPc) {
 
 <template>
   <div class="app-view" :class="isPc ? 'app-view-pc' : 'app-view-mobile'">
-    <MyHeader v-show="commonStore.headerVisible" class="app-header" />
+    <Transition>
+      <MyHeader v-show="commonStore.headerVisible" class="app-header" />
+    </Transition>
     <main
       class="app-main"
       :class="{ 'app-main-no-header': !commonStore.headerVisible }"
@@ -34,6 +36,16 @@ $header-height: 60px;
   .app-header {
     height: $header-height;
   }
+
+  .v-enter-active,
+  .v-leave-active {
+    transition: height 0.2s;
+  }
+  .v-enter-from,
+  .v-leave-to {
+    height: 0;
+  }
+
   .app-main {
     display: flex;
     flex-direction: column;
@@ -54,6 +66,7 @@ $header-height: 60px;
   width: 100%;
   .app-main {
     min-height: calc(100% - $header-height);
+    transition: 0.2s;
   }
   .app-main-no-header {
     min-height: 100%;

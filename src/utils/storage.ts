@@ -1,17 +1,19 @@
-const AUTHORIZATION_KEY = "__MEDICAL_HITSZ_AUTHORIZATION";
-
-export const getAuthorization = () => {
-  return localStorage.getItem(AUTHORIZATION_KEY) || "";
-};
-
-export const setAuthorization = (newAuthorization: string) => {
-  localStorage.setItem(AUTHORIZATION_KEY, newAuthorization);
-};
-
-export const clearAuthorization = () => {
-  localStorage.removeItem(AUTHORIZATION_KEY);
-};
-
 export const clearStorage = () => {
   localStorage.clear();
+};
+
+export const setStorage = (key: string, value: any) => {
+  return localStorage.setItem(key, JSON.stringify(value));
+};
+
+export const getStorage = (key: string) => {
+  return JSON.parse(localStorage.getItem(key) || "null");
+};
+
+export const setStringStorage = (key: string, value: string) => {
+  return localStorage.setItem(key, value);
+};
+
+export const getStringStorage = (key: string) => {
+  return localStorage.getItem(key) || "";
 };
