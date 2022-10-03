@@ -4,6 +4,9 @@ import type { ChatRoom } from "@/types/service";
 import ChatRoomList from "@/components/chat/ChatRoomList.vue";
 import ChatWindow from "@/components/chat/ChatWindow.vue";
 import ChatEmpty from "@/components/chat/ChatEmpty.vue";
+import { useCommonStore } from "@/stores/common";
+
+const commonStore = useCommonStore();
 
 const currentChatRoom = ref<ChatRoom | null>(null);
 const sidebarVisible = ref(false);
@@ -16,6 +19,8 @@ const handleClickModal = () => {
     sidebarVisible.value = false;
   }
 };
+
+commonStore.setHeaderVisible(false);
 </script>
 
 <template>
@@ -54,7 +59,7 @@ const handleClickModal = () => {
     background-color: rgba($color: #000000, $alpha: 0.2);
     z-index: 100;
     .chat-sidebar {
-      width: 50%;
+      width: 60%;
       height: 100%;
     }
   }

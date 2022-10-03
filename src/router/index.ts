@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import userApi from "@/api/user";
-import { uerAgentIsPC } from "@/utils/common";
+import { userAgentIsPC } from "@/utils/common";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,7 +10,7 @@ const router = createRouter({
       path: "/",
       name: "Chat",
       component: () => {
-        if (uerAgentIsPC()) {
+        if (userAgentIsPC()) {
           return import("@/views/pc/ChatView.vue");
         } else {
           return import("@/views/mobile/ChatView.vue");
@@ -24,7 +24,7 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: () => {
-        if (uerAgentIsPC()) {
+        if (userAgentIsPC()) {
           return import("@/views/pc/LoginView.vue");
         } else {
           return import("@/views/mobile/LoginView.vue");
@@ -38,7 +38,7 @@ const router = createRouter({
       path: "/user-center",
       name: "UserCenter",
       component: () => {
-        if (uerAgentIsPC()) {
+        if (userAgentIsPC()) {
           return import("@/views/pc/UserCenterView.vue");
         } else {
           return import("@/views/mobile/UserCenterView.vue");
@@ -52,7 +52,7 @@ const router = createRouter({
       path: "/:pathMatch(.*)",
       name: "NotFound",
       component: () => {
-        if (uerAgentIsPC()) {
+        if (userAgentIsPC()) {
           return import("@/views/pc/NotFoundView.vue");
         } else {
           return import("@/views/mobile/NotFoundView.vue");

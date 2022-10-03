@@ -2,18 +2,27 @@
 import { RouterView } from "vue-router";
 import MyHeader from "@/components/MyHeader.vue";
 import MyFooter from "./components/MyFooter.vue";
-import { uerAgentIsPC } from "@/utils/common";
+import { userAgentIsPC } from "@/utils/common";
+import { useCommonStore } from "@/stores/common";
 
-const isPC = uerAgentIsPC();
+const isPc = userAgentIsPC();
+const commonStore = useCommonStore();
+
+if (!isPc) {
+  commonStore.setFooterVisible(false);
+}
 </script>
 
 <template>
-  <div class="app-view" :class="isPC ? 'app-view-pc' : 'app-view-mobile'">
-    <MyHeader class="app-header" />
-    <main class="app-main">
+  <div class="app-view" :class="isPc ? 'app-view-pc' : 'app-view-mobile'">
+    <MyHeader v-show="commonStore.headerVisible" class="app-header" />
+    <main
+      class="app-main"
+      :class="{ 'app-main-no-header': !commonStore.headerVisible }"
+    >
       <RouterView />
     </main>
-    <MyFooter v-if="isPC" class="app-footer" />
+    <MyFooter v-show="commonStore.footerVisible" class="app-footer" />
   </div>
 </template>
 
@@ -44,7 +53,10 @@ $header-height: 60px;
 .app-view-mobile {
   width: 100%;
   .app-main {
-    min-height: calc(100vh - $header-height);
+    min-height: calc(100% - $header-height);
+  }
+  .app-main-no-header {
+    min-height: 100%;
   }
 }
 </style>

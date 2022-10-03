@@ -168,7 +168,7 @@ getRoomList();
     width: 100%;
     .chat-room-list-item {
       height: 50px;
-      width: 180px;
+      max-width: min(180px, 100% - 20px);
       justify-content: space-between;
       box-sizing: border-box;
       padding: 0 15px;
@@ -214,7 +214,7 @@ getRoomList();
   }
   .chat-room-list-create {
     flex-shrink: 0;
-    width: 120px;
+    width: min(120px, 100% - 20px);
     margin: 10px 0;
   }
 }

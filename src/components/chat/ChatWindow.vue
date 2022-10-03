@@ -16,6 +16,7 @@ import chatApi from "@/api/chat";
 import type { WebSocketInterface } from "@/types/common";
 import { connectWebSocket } from "@/api/socket";
 import type { ElScrollbar } from "element-plus";
+import { useCommonStore } from "@/stores/common";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
@@ -24,6 +25,7 @@ const props = defineProps<{
 const currentChatRoom = computed(() => props.currentChatRoom);
 
 const userStore = useUserStore();
+const commonStore = useCommonStore();
 const user = computed(() => userStore.user);
 
 const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>();
@@ -117,6 +119,13 @@ const handleSubmit = () => {
   });
 };
 
+const handleHeaderShow = () => {
+  commonStore.setHeaderVisible(true);
+};
+const handleHeaderHide = () => {
+  commonStore.setHeaderVisible(false);
+};
+
 onMounted(() => {
   connetWebSocket();
 });
@@ -138,14 +147,31 @@ onBeforeUnmount(() => {
       class="chat-window-title"
       :class="{ 'chat-window-title-no-radius': setSidebarVisible }"
     >
-      <el-icon
-        class="chat-window-title-expand"
-        v-if="setSidebarVisible"
-        @click="setSidebarVisible"
-      >
-        <Expand />
-      </el-icon>
       <span>{{ currentChatRoom.roomName }}</span>
+      <template v-if="setSidebarVisible">
+        <el-icon
+          class="chat-window-title-expand"
+          v-if="setSidebarVisible"
+          @click="setSidebarVisible"
+        >
+          <Expand />
+        </el-icon>
+
+        <el-icon
+          v-if="commonStore.headerVisible"
+          class="chat-window-title-header-control"
+          @click="handleHeaderHide"
+        >
+          <ArrowUpBold />
+        </el-icon>
+        <el-icon
+          v-else
+          class="chat-window-title-header-control"
+          @click="handleHeaderShow"
+        >
+          <ArrowDownBold />
+        </el-icon>
+      </template>
     </div>
     <el-scrollbar class="chat-window-body" ref="scrollbarRef">
       <div class="chat-window-inner-body" ref="scrollbarInnerRef">
@@ -156,7 +182,7 @@ onBeforeUnmount(() => {
           >
             <div class="chat-window-msg-body">
               <div class="chat-window-msg-top">
-                <span class="chat-window-msg-time">
+                <span class="chat-window-msg-time" v-if="!setSidebarVisible">
                   {{ transformDate(message.createTime) }}
                 </span>
                 <span class="chat-window-msg-name">{{ user.nickname }}</span>
@@ -170,7 +196,7 @@ onBeforeUnmount(() => {
             <div class="chat-window-msg-body">
               <div class="chat-window-msg-top">
                 <span class="chat-window-msg-name">{{ systemName }}</span>
-                <span class="chat-window-msg-time">
+                <span class="chat-window-msg-time" v-if="!setSidebarVisible">
                   {{ transformDate(message.createTime) }}
                 </span>
               </div>
@@ -217,7 +243,14 @@ onBeforeUnmount(() => {
   .chat-window-title-expand {
     position: absolute;
     top: 50%;
-    left: 10px;
+    left: 20px;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
+  .chat-window-title-header-control {
+    position: absolute;
+    top: 50%;
+    right: 20px;
     transform: translateY(-50%);
     font-size: 20px;
   }
