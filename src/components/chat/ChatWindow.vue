@@ -279,7 +279,7 @@ if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
         .chat-window-msg {
           display: flex;
           margin: 20px 20px 0;
-          max-width: calc(100% - 100px);
+          max-width: calc(100% - 70px);
           &:last-child {
             margin-bottom: 20px;
           }
@@ -310,6 +310,7 @@ if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
               padding: 7px 10px;
               color: var(--my-gray-dark-1);
               width: fit-content;
+              word-break: break-all;
             }
           }
           &:hover {
