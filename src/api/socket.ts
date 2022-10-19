@@ -3,6 +3,69 @@ import type { WebSocketInterface, SocketMessage } from "@/types/common";
 import type { SocketChatMessage } from "@/types/service";
 import { ElMessage } from "element-plus";
 
+class Timer {
+  timeToWait: number;
+  timeout: NodeJS.Timeout | null;
+  callback: () => void;
+  constructor(callback: () => void, timeToWait = 5000) {
+    this.timeToWait = timeToWait;
+    this.timeout = null;
+    this.callback = callback;
+  }
+  start() {
+    this.stop();
+    this.timeout = setTimeout(() => {
+      this.timeout = null;
+      this.callback();
+    }, this.timeToWait);
+  }
+  stop() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+  }
+}
+
+enum HeartBeatState {
+  WaitingForSending = "WaitingForSending",
+  WaitingForReceiving = "WaitingForReceiving",
+  Closed = "Closed",
+}
+
+class HeartBeatHandler {
+  state: HeartBeatState;
+  sendTimer: Timer;
+  receiveTimer: Timer;
+  constructor(heartBeatFunc: () => void, closeFunc: () => void) {
+    this.state = HeartBeatState.WaitingForSending;
+    this.sendTimer = new Timer(() => {
+      this.state = HeartBeatState.WaitingForReceiving;
+      this.receiveTimer.start();
+      heartBeatFunc();
+    });
+    this.receiveTimer = new Timer(() => {
+      this.close();
+      closeFunc();
+    });
+    this.sendTimer.start();
+  }
+  restart() {
+    if (this.state !== HeartBeatState.Closed) {
+      this.state = HeartBeatState.WaitingForSending;
+      this.receiveTimer.stop();
+      this.sendTimer.start();
+    }
+  }
+  close() {
+    if (this.state !== HeartBeatState.Closed) {
+      this.state = HeartBeatState.Closed;
+      this.receiveTimer.stop();
+      this.sendTimer.stop();
+    }
+  }
+}
+
 enum WebSocketState {
   BeforeConnect = "BeforeConnect",
   HandShaking = "HandShaking",
@@ -22,11 +85,13 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
     message: SocketChatMessage;
     resolve: (value: void) => void;
   }[];
+  _heartBeatHandler: HeartBeatHandler | null;
   constructor(messageHandler: (socketChatMessage: SocketChatMessage) => void) {
     super(import.meta.env.VITE_SOCKET_BASE_API + "/websocket/v1/connect");
     this._state = WebSocketState.BeforeConnect;
     this._messageHandlers = {};
     this._messageToSendQueue = [];
+    this._heartBeatHandler = null;
 
     this._addMessageHandler<{ result: string }>(
       [WebSocketState.HandShaking],
@@ -38,6 +103,12 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
         } else {
           this._state = WebSocketState.Connected;
           this._startClearSendQueue();
+          this._heartBeatHandler = new HeartBeatHandler(() => {
+            this._send({
+              path: "/client/heart-beat",
+              data: null,
+            });
+          }, this._close);
         }
       }
     );
@@ -49,10 +120,7 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
     this._addMessageHandler<{ result: string }>(
       [WebSocketState.HandShaking, WebSocketState.Connected],
       "/server/disconnect",
-      () => {
-        this._state = WebSocketState.Disconnected;
-        this.close();
-      }
+      this._close
     );
 
     this.onopen = () => {
@@ -64,13 +132,22 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
       });
     };
     this.onmessage = ({ data }) => {
+      this._heartBeatRestart();
       this._messageHandleController(JSON.parse(data as string));
     };
     this.onerror = () => {};
+    this.onclose = () => {
+      this._heartBeatClose();
+    };
   }
 
   _send<T>(socketMessage: SocketMessage<T>) {
     this.send(JSON.stringify(socketMessage));
+  }
+
+  _close() {
+    this._state = WebSocketState.Disconnected;
+    this.close();
   }
 
   _messageHandleController(socketMessage: SocketMessage<any>) {
@@ -115,6 +192,13 @@ class HandledWebSocket extends WebSocket implements WebSocketInterface {
         }
       }
     }
+  }
+
+  _heartBeatRestart() {
+    this._heartBeatHandler?.restart();
+  }
+  _heartBeatClose() {
+    this._heartBeatHandler?.close();
   }
 
   disconnect() {
