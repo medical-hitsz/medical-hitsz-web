@@ -7,7 +7,7 @@ class Timer {
   timeToWait: number;
   timeout: NodeJS.Timeout | null;
   callback: () => void;
-  constructor(callback: () => void, timeToWait = 5000) {
+  constructor(callback: () => void, timeToWait = 30000) {
     this.timeToWait = timeToWait;
     this.timeout = null;
     this.callback = callback;
