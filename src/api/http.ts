@@ -10,7 +10,7 @@ const request = axios.create({
   responseType: "json",
   withCredentials: true,
   headers: {
-    "Content-Type": "application-json/x-www-form-urlencoded;charset=utf-8",
+    "Content-Type": "application/json;charset=utf-8",
   },
 });
 
@@ -18,7 +18,7 @@ request.interceptors.request.use(
   (config) => {
     const store = useUserStore();
     if (store.authorization) {
-      config.headers.authorization = "Bearer " + store.authorization;
+      config.headers.Authorization = "Bearer " + store.authorization;
     }
     return config;
   },
