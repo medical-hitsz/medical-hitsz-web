@@ -32,9 +32,12 @@ export declare interface Message {
   msg: string;
   isUser: boolean;
   createTime: timeMs;
+  roomID?: string;
+  clientMsgID?: string;
 }
 
-export declare interface SocketChatMessage {
+export declare interface MessageToSend {
+  msg: string;
   roomID: string;
-  message: string;
+  clientMsgID: string;
 }

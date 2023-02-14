@@ -5,13 +5,3 @@ export declare interface ApiResponse<T> {
   msg: string;
   data: T;
 }
-
-export declare interface SocketMessage<T> {
-  path: string;
-  data: T;
-}
-
-export declare interface WebSocketInterface {
-  sendMessage: (message: SocketChatMessage) => Promise<void>;
-  disconnect: () => void;
-}

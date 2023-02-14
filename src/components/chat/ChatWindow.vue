@@ -8,16 +8,16 @@ import {
   ref,
   watch,
 } from "vue";
-import type { ChatRoom, Message, SocketChatMessage } from "@/types/service";
+import type { ChatRoom, Message, MessageToSend } from "@/types/service";
 import { useUserStore } from "@/stores/user";
 import { LogoSUrl } from "@/constants/url";
 import { getDateFormat } from "@/utils/common";
 import chatApi from "@/api/chat";
-import type { WebSocketInterface } from "@/types/common";
-import { connectWebSocket } from "@/api/socket";
+import { tryInitSocket, sendMessage } from "@/api/socket";
 import type { ElScrollbar } from "element-plus";
 import { useCommonStore } from "@/stores/common";
 import { setStorage, getStorage } from "@/utils/storage";
+import { nanoid } from "nanoid";
 
 const props = defineProps<{
   currentChatRoom: ChatRoom;
@@ -34,7 +34,6 @@ const scrollbarInnerRef = ref<HTMLDivElement>();
 
 const systemName = "智能诊疗会话小助手";
 const loading = ref(false);
-const webSocket = ref<WebSocketInterface | null>(null);
 const headerVisibleKey = "headerVisible";
 
 const msgList = reactive<Message[]>([]);
@@ -57,37 +56,35 @@ const getMsgList = async () => {
   }
 };
 
-const sendMessage = (message: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (webSocket.value && currentChatRoom.value) {
-      webSocket.value
-        .sendMessage({ roomID: currentChatRoom.value.roomID, message })
-        .then(() => {
-          resolve();
-        });
-    } else {
-      reject();
-    }
-  });
+const addMsg = (msg: Message) => {
+  msgList.push(msg);
 };
 
-const receiveMessage = (socketChatMessage: SocketChatMessage) => {
-  if (currentChatRoom.value?.roomID === socketChatMessage.roomID) {
-    addMsg(socketChatMessage.message, false);
-  }
+const receiveMessage = (...messages: Message[]) => {
+  messages.forEach((msg) => {
+    if (
+      !currentChatRoom.value ||
+      currentChatRoom.value?.roomID !== msg.roomID
+    ) {
+      return;
+    }
+    if (msg.isUser && msg.clientMsgID) {
+      for (let i = 0; i < msgList.length; i++) {
+        if (
+          msgList[i].clientMsgID &&
+          msgList[i].clientMsgID === msg.clientMsgID
+        ) {
+          msgList[i] = msg;
+          return;
+        }
+      }
+    }
+    msgList.push(msg);
+  });
 };
 
 const connetWebSocket = () => {
-  webSocket.value = connectWebSocket(receiveMessage);
-};
-
-const addMsg = (msg: string, isUser: boolean) => {
-  msgList.push({
-    msgID: 0,
-    msg,
-    isUser,
-    createTime: new Date().valueOf(),
-  });
+  tryInitSocket(receiveMessage);
 };
 
 watch(
@@ -116,9 +113,19 @@ const handleSubmit = () => {
     return;
   }
   input.value = "";
-  sendMessage(handledInput).then(() => {
-    addMsg(handledInput, true);
-  });
+  const msgToSend: MessageToSend = {
+    msg: handledInput,
+    roomID: currentChatRoom.value.roomID,
+    clientMsgID: nanoid(),
+  };
+  const message: Message = {
+    msgID: -1,
+    ...msgToSend,
+    isUser: true,
+    createTime: Date.now().valueOf(),
+  };
+  sendMessage(msgToSend);
+  addMsg(message);
 };
 
 const handleHeaderShow = () => {
@@ -133,12 +140,7 @@ const handleHeaderHide = () => {
 onMounted(() => {
   connetWebSocket();
 });
-onBeforeUnmount(() => {
-  if (webSocket.value) {
-    webSocket.value.disconnect();
-    webSocket.value = null;
-  }
-});
+onBeforeUnmount(() => {});
 
 if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
   handleHeaderHide();
