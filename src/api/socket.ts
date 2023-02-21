@@ -7,7 +7,7 @@ import { ElMessage } from "element-plus";
 const socketPath = import.meta.env.VITE_SOCKET_BASE_API;
 let socket: null | Socket = null;
 
-const tryInitSocket = (messageHandler: (...msg: Message[]) => void) => {
+const tryInitSocket = (messageHandler: (msg: Message) => void) => {
   if (!socket) {
     const store = useUserStore();
     const manager = new Manager(socketPath, {
@@ -17,8 +17,8 @@ const tryInitSocket = (messageHandler: (...msg: Message[]) => void) => {
       transports: ["websocket"],
     });
     socket = manager.socket("/");
-    socket.on("message", (data: Message[]) => {
-      messageHandler(...data);
+    socket.on("message", (data: Message) => {
+      messageHandler(data);
     });
     socket.on("connect", () => {});
     socket.on("disconnect", () => {

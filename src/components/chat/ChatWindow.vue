@@ -60,27 +60,22 @@ const addMsg = (msg: Message) => {
   msgList.push(msg);
 };
 
-const receiveMessage = (...messages: Message[]) => {
-  messages.forEach((msg) => {
-    if (
-      !currentChatRoom.value ||
-      currentChatRoom.value?.roomID !== msg.roomID
-    ) {
-      return;
-    }
-    if (msg.isUser && msg.clientMsgID) {
-      for (let i = 0; i < msgList.length; i++) {
-        if (
-          msgList[i].clientMsgID &&
-          msgList[i].clientMsgID === msg.clientMsgID
-        ) {
-          msgList[i] = msg;
-          return;
-        }
+const receiveMessage = (msg: Message) => {
+  if (!currentChatRoom.value || currentChatRoom.value?.roomID !== msg.roomID) {
+    return;
+  }
+  if (msg.isUser && msg.clientMsgID) {
+    for (let i = 0; i < msgList.length; i++) {
+      if (
+        msgList[i].clientMsgID &&
+        msgList[i].clientMsgID === msg.clientMsgID
+      ) {
+        msgList[i] = msg;
+        return;
       }
     }
-    msgList.push(msg);
-  });
+  }
+  msgList.push(msg);
 };
 
 const connetWebSocket = () => {
