@@ -44,7 +44,7 @@ request.interceptors.response.use(
     if (errorResponse?.status === 401) {
       errMsg = "请登录！";
     } else {
-      errMsg = "请求出错！";
+      errMsg = errorResponse.data.msg || "请求出错！";
     }
     ElMessage.error(errMsg);
     return Promise.reject(new Error(errMsg));
