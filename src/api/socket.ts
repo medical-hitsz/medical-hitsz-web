@@ -20,12 +20,14 @@ const tryInitSocket = (messageHandler: (msg: Message) => void) => {
     socket.on("message", (data: Message) => {
       messageHandler(data);
     });
-    socket.on("connect", () => {});
+    socket.on("connect", () => {
+      ElMessage.success("socket已连接！");
+    });
     socket.on("disconnect", () => {
-      ElMessage.error("webSocket已断开连接，请刷新重试...");
+      ElMessage.error("socket已断开连接...");
     });
     socket.on("connect_error", () => {
-      ElMessage.error("webSocket连接出错，请刷新重试...");
+      ElMessage.error("socket连接出错...");
     });
   }
 };
