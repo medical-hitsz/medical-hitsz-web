@@ -58,12 +58,13 @@ export function get(
   let targetPath = path;
   if (params) {
     targetPath += "?";
-    const first = true;
+    let first = true;
     for (const k in params) {
       if (!first) {
         targetPath = targetPath + "&";
       }
       targetPath = targetPath + k + "=" + params[k];
+      first = false;
     }
   }
   return request({
