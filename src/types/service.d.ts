@@ -19,7 +19,7 @@ export declare interface CosConfig {
 export declare interface User {
   nickname: string;
   avatar: string;
-  isAdmin: string;
+  isAdmin?: boolean;
 }
 
 export declare interface ChatRoom {

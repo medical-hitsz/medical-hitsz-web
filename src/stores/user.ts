@@ -12,7 +12,7 @@ export const useUserStore = defineStore({
   id: "user",
   state: () => ({
     isLoggedIn: false,
-    user: { nickname: "", avatar: "" } as User,
+    user: { nickname: "", avatar: "", isAdmin: false } as User,
     _authorization: "",
   }),
   getters: {
@@ -31,7 +31,7 @@ export const useUserStore = defineStore({
       setStringStorage(AUTHORIZATION_KEY, authorization);
     },
     logout() {
-      this.user = { nickname: "", avatar: "" };
+      this.user = { nickname: "", avatar: "", isAdmin: false };
       this.isLoggedIn = false;
       this._authorization = "";
       clearStorage();
