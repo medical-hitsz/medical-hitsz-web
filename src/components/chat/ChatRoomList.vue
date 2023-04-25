@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-import type { ChatRoom } from "@/types/service";
+import { computed, reactive, ref, watch, nextTick } from "vue";
+import { ElMessage, ElMessageBox, type FormRules } from "element-plus";
+import type { ChatRoom, Model } from "@/types/service";
 import chatApi from "@/api/chat";
+import modelApi from "@/api/model";
 
 const props = defineProps<{
   modelValue: ChatRoom | null;
@@ -19,8 +20,27 @@ const modelValue = computed({
 });
 
 const loading = ref(false);
+const dialogVisible = ref(false);
+const formRef = ref();
+const createRoomForm = reactive({
+  roomName: "",
+  modelId: "",
+});
+const rules = reactive<FormRules>({
+  roomName: [{ required: true, trigger: "blur", message: "请输入会话名称" }],
+  modelId: [
+    {
+      required: true,
+      type: "integer",
+      message: "请选择会话模型服务",
+      trigger: "blur",
+    },
+  ],
+});
 
+const modelList = reactive<Model[]>([]);
 const roomList = reactive<ChatRoom[]>([]);
+
 const getRoomList = async (targetRoomID?: string) => {
   try {
     loading.value = true;
@@ -56,6 +76,17 @@ const getRoomList = async (targetRoomID?: string) => {
   }
 };
 
+const getModelList = async () => {
+  try {
+    const res = await modelApi.getModelList();
+    const _modelList = res.data || [];
+    modelList.splice(0);
+    modelList.push(..._modelList);
+  } catch {
+    return;
+  }
+};
+
 const handleChosenChatRoom = (room: ChatRoom) => {
   modelValue.value = room;
   props.setSidebarVisible && props.setSidebarVisible(false);
@@ -82,27 +113,30 @@ const handleDeleteChatRoom = async (room: ChatRoom) => {
   }
 };
 
-const handleCreateChatRoom = async () => {
-  try {
-    const { value } = await ElMessageBox.prompt("", "新建会话", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      inputValidator: (val: string) => {
-        return val ? true : "会话名不能为空！";
-      },
-      inputErrorMessage: "会话名不能为空！",
-      inputPlaceholder: "请输入会话名",
-    });
-    const { data } = await chatApi.createRoom({ roomName: value });
+const handleSubmitCreateRoomForm = async () => {
+  await formRef.value.validate(async (valid: boolean) => {
+    if (!valid) {
+      return;
+    }
+    dialogVisible.value = false;
+    const name = createRoomForm.roomName;
+    const { data } = await chatApi.createRoom(createRoomForm);
     ElMessage({
       type: "success",
-      message: `新建会话: ${value}`,
+      message: `新建会话: ${name}`,
     });
     await getRoomList(data.roomID);
-  } catch {
-    return;
-  }
+  });
 };
+
+watch(dialogVisible, (val) => {
+  if (val) {
+    getModelList();
+    nextTick(() => {
+      formRef.value.resetFields();
+    });
+  }
+});
 
 getRoomList();
 </script>
@@ -140,12 +174,59 @@ getRoomList();
       </div>
     </el-scrollbar>
     <el-button
-      @click="handleCreateChatRoom"
+      @click="dialogVisible = true"
       type="primary"
       class="chat-room-list-create"
     >
       新建会话
     </el-button>
+
+    <el-dialog
+      v-model="dialogVisible"
+      title="新建会话"
+      class="chat-room-list-create-room"
+      append-to-body
+    >
+      <el-form :model="createRoomForm" :rules="rules" ref="formRef">
+        <el-form-item prop="roomName" class="form-item">
+          <el-input
+            v-model="createRoomForm.roomName"
+            placeholder="请输入会话名称"
+          />
+        </el-form-item>
+        <el-form-item prop="modelId" class="form-item">
+          <el-select
+            v-model="createRoomForm.modelId"
+            placeholder="请选择会话模型服务"
+          >
+            <el-option
+              v-for="model in modelList"
+              :key="model.modelId"
+              :label="model.modelName"
+              :value="model.modelId"
+            >
+              <span style="float: left">{{ model.modelName }}</span>
+              <span
+                style="
+                  float: right;
+                  color: var(--el-text-color-secondary);
+                  font-size: 13px;
+                "
+                >{{ model.runningStatus ? "运行中" : "未运行" }}</span
+              >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmitCreateRoomForm()">
+            确定
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -220,5 +301,11 @@ getRoomList();
     width: min(120px, 100% - 20px);
     margin: 10px 0;
   }
+}
+</style>
+
+<style>
+.chat-room-list-create-room {
+  width: min(600px, 90%);
 }
 </style>

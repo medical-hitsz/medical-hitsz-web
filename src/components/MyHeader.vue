@@ -10,6 +10,7 @@ import { userAgentIsPC } from "@/utils/common";
 
 enum DropdownCommand {
   UserCenter,
+  Model,
   Logout,
 }
 
@@ -40,6 +41,9 @@ const handleCommand = (command: DropdownCommand) => {
   switch (command) {
     case DropdownCommand.UserCenter:
       router.push("user-center");
+      break;
+    case DropdownCommand.Model:
+      router.push("model");
       break;
     case DropdownCommand.Logout:
       logout();
@@ -91,6 +95,10 @@ const handleClickAvatar = () => {
           <el-dropdown-item :command="DropdownCommand.UserCenter" divided>
             <el-icon><User /></el-icon>
             <span>用户中心</span>
+          </el-dropdown-item>
+          <el-dropdown-item :command="DropdownCommand.Model">
+            <el-icon><ChatLineRound /></el-icon>
+            <span>会话模型</span>
           </el-dropdown-item>
           <el-dropdown-item :command="DropdownCommand.Logout">
             <el-icon><IconLogout /></el-icon>

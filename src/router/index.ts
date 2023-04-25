@@ -49,6 +49,20 @@ const router = createRouter({
       },
     },
     {
+      path: "/model",
+      name: "Model",
+      component: () => {
+        if (userAgentIsPC()) {
+          return import("@/views/pc/ModelView.vue");
+        } else {
+          return import("@/views/mobile/ModelView.vue");
+        }
+      },
+      meta: {
+        title: "会话模型",
+      },
+    },
+    {
       path: "/:pathMatch(.*)",
       name: "NotFound",
       component: () => {

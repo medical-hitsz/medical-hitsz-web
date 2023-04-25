@@ -19,12 +19,15 @@ export declare interface CosConfig {
 export declare interface User {
   nickname: string;
   avatar: string;
+  isAdmin: string;
 }
 
 export declare interface ChatRoom {
   roomID: string;
   roomName: string;
   lastMsgTime: timeMs;
+  modelName?: string;
+  modelId?: number;
 }
 
 export declare interface Message {
@@ -40,4 +43,12 @@ export declare interface MessageToSend {
   msg: string;
   roomID: string;
   clientMsgID: string;
+}
+
+export declare interface Model {
+  modelId: number;
+  modelName: string;
+  runningStatus?: string;
+  ownerName?: string;
+  modelSecret?: string;
 }

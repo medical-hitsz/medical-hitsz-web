@@ -16,18 +16,18 @@ const tryInitSocket = (messageHandler: (msg: Message) => void) => {
       },
       transports: ["websocket"],
     });
-    socket = manager.socket("/");
+    socket = manager.socket("/message");
     socket.on("message", (data: Message) => {
       messageHandler(data);
     });
     socket.on("connect", () => {
-      ElMessage.success("socket已连接！");
+      //   ElMessage.success("socket已连接！");
     });
     socket.on("disconnect", () => {
-      ElMessage.error("socket已断开连接...");
+      //   ElMessage.error("socket已断开连接...");
     });
     socket.on("connect_error", () => {
-      ElMessage.error("socket连接出错...");
+      ElMessage.error("socket连接出错！");
     });
   }
 };

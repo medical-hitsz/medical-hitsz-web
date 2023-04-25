@@ -14,7 +14,7 @@ import { LogoSUrl } from "@/constants/url";
 import { getDateFormat } from "@/utils/common";
 import chatApi from "@/api/chat";
 import { tryInitSocket, sendMessage } from "@/api/socket";
-import type { ElScrollbar } from "element-plus";
+import { ElMessageBox, type ElScrollbar } from "element-plus";
 import { useCommonStore } from "@/stores/common";
 import { setStorage, getStorage } from "@/utils/storage";
 import { nanoid } from "nanoid";
@@ -80,6 +80,19 @@ const receiveMessage = (msg: Message) => {
 
 const connetWebSocket = () => {
   tryInitSocket(receiveMessage);
+};
+
+const handleCheckRoomMessage = () => {
+  ElMessageBox.alert(
+    `<div>会话模型名称：${currentChatRoom.value.modelName}</div>
+    <div>模型号：${currentChatRoom.value.modelId}<div>`,
+    "",
+    {
+      confirmButtonText: "确定",
+      closeOnClickModal: true,
+      dangerouslyUseHTMLString: true,
+    }
+  ).catch(() => {});
 };
 
 watch(
@@ -151,6 +164,7 @@ if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
     <div
       class="chat-window-title"
       :class="{ 'chat-window-title-no-radius': setSidebarVisible }"
+      @click.self="handleCheckRoomMessage"
     >
       <span>{{ currentChatRoom.roomName }}</span>
       <template v-if="setSidebarVisible">
@@ -244,6 +258,7 @@ if (getStorage(headerVisibleKey) === false && props.setSidebarVisible) {
     border-radius: 10px 10px 0 0;
     text-align: center;
     position: relative;
+    cursor: pointer;
   }
   .chat-window-title-expand {
     position: absolute;

@@ -1,22 +1,28 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import MyHeader from "@/components/MyHeader.vue";
 import MyFooter from "./components/MyFooter.vue";
 import { userAgentIsPC } from "@/utils/common";
 import { useCommonStore } from "@/stores/common";
+import { computed } from "vue";
 
 const isPc = userAgentIsPC();
 const commonStore = useCommonStore();
+const route = useRoute();
 
 if (!isPc) {
   commonStore.setFooterVisible(false);
 }
+
+const headerVisible = computed(() => {
+  return route.path !== "/" || commonStore.headerVisible;
+});
 </script>
 
 <template>
   <div class="app-view" :class="isPc ? 'app-view-pc' : 'app-view-mobile'">
     <Transition>
-      <MyHeader v-show="commonStore.headerVisible" class="app-header" />
+      <MyHeader v-show="headerVisible" class="app-header" />
     </Transition>
     <main
       class="app-main"

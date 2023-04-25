@@ -7,6 +7,7 @@ const apiGroup = "/api/v1/chat";
 export default {
   createRoom(params: {
     roomName: string;
+    modelId: string;
   }): ApiResponsePromise<{ roomID: string }> {
     return post(apiGroup + "/create-room", params);
   },
